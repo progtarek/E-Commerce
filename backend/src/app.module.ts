@@ -1,3 +1,4 @@
+import { MediaModule } from './modules/media/media.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Module } from '@nestjs/common';
 import { ProductsModule } from './modules/products/products.module';
@@ -5,7 +6,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    ProductsModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -16,6 +16,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       }),
       inject: [ConfigService],
     }),
+    ProductsModule,
+    MediaModule,
   ],
 })
 export class AppModule {}
