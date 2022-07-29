@@ -49,4 +49,13 @@ export class ProductsService {
       }
     }
   }
+
+  async delete(uniqueName: string): Promise<void> {
+    const foundProduct = await this._productModel.findOne({ uniqueName });
+    if (!foundProduct) {
+      throw new NotFoundException('Product not found');
+    } else {
+      await foundProduct.remove();
+    }
+  }
 }
