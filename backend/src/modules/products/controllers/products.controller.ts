@@ -20,6 +20,11 @@ import { PaginationParamsDTO } from '../dto/paginate.dto';
 export class ProductsController {
   constructor(private _productService: ProductsService) {}
 
+  @Get(':uniqueName')
+  async findProduct(@Param('uniqueName') uniqueName: string): Promise<Product> {
+    return this._productService.findProduct(uniqueName);
+  }
+
   @Get('')
   @UsePipes(new ValidationPipe({ transform: true }))
   async find(

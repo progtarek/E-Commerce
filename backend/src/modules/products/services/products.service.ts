@@ -34,6 +34,17 @@ export class ProductsService {
     return { docs, total };
   }
 
+  async findProduct(uniqueName: string): Promise<Product> {
+    const foundProduct = await this._productModel
+      .findOne({ uniqueName })
+      .select('title description price uniqueName -_id');
+    if (!foundProduct) {
+      throw new NotFoundException('Product not found');
+    } else {
+      return foundProduct;
+    }
+  }
+
   async create(createProductDto: CreateProductDTO): Promise<Product> {
     const existed = await this._productModel.findOne({
       title: createProductDto.title,
