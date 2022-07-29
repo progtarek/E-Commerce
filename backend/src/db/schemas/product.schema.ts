@@ -18,7 +18,7 @@ export class Product {
   @Prop({ required: true, min: 1 })
   price: number;
 
-  @Prop()
+  @Prop({ unique: true, index: true })
   uniqueName: string;
 }
 

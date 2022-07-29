@@ -1,6 +1,10 @@
 import { CreateProductDTO } from './../dto/create-product.dto';
 import { Product } from './../../../db/schemas/product.schema';
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
@@ -10,15 +14,39 @@ export class ProductsService {
     @InjectModel(Product.name) private _productModel: Model<Product>,
   ) {}
 
-  async create(createCatDto: CreateProductDTO): Promise<Product> {
+  async create(createProductDto: CreateProductDTO): Promise<Product> {
     const existed = await this._productModel.findOne({
-      title: createCatDto.title,
+      title: createProductDto.title,
     });
     if (existed) {
       throw new ConflictException('Product already exist');
     } else {
-      const createdCat = new this._productModel(createCatDto);
-      return createdCat.save();
+      const createdProduct = new this._productModel(createProductDto);
+      return createdProduct.save();
+    }
+  }
+
+  async edit(
+    uniqueName: string,
+    createProductDto: CreateProductDTO,
+  ): Promise<Product> {
+    const foundProduct = await this._productModel.findOne({ uniqueName });
+    if (!foundProduct) {
+      throw new NotFoundException('Product not found');
+    } else {
+      const existed = await this._productModel.findOne({
+        title: createProductDto.title,
+        uniqueName: { $ne: uniqueName },
+      });
+      if (existed) {
+        throw new ConflictException('Product already exist');
+      } else {
+        return await this._productModel.findOneAndUpdate(
+          { uniqueName },
+          createProductDto,
+          { new: true },
+        );
+      }
     }
   }
 }
