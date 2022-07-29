@@ -1,3 +1,5 @@
+import { PaginatedResponse } from './../dto/paginated-response.model';
+import { PaginationParamsDTO } from './../dto/paginate.dto';
 import { CreateProductDTO } from './../dto/create-product.dto';
 import { Product } from './../../../db/schemas/product.schema';
 import {
@@ -13,6 +15,24 @@ export class ProductsService {
   constructor(
     @InjectModel(Product.name) private _productModel: Model<Product>,
   ) {}
+
+  async find(
+    queryParams: PaginationParamsDTO,
+  ): Promise<PaginatedResponse<Product>> {
+    const query = this._productModel
+      .find()
+      .select('title description price uniqueName -_id')
+      .sort({ _id: 1 })
+      .skip(queryParams.skip);
+
+    if (queryParams.limit) {
+      query.limit(queryParams.limit);
+    }
+    const docs = await query;
+    const total = await this._productModel.count();
+
+    return { docs, total };
+  }
 
   async create(createProductDto: CreateProductDTO): Promise<Product> {
     const existed = await this._productModel.findOne({

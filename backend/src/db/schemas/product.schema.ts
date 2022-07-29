@@ -4,7 +4,7 @@ import * as getSlug from 'speakingurl';
 
 export type ProductDocument = Product & Document;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Product {
   @Prop({ trim: true, required: true, minlength: 10, maxlength: 100 })
   title: string;
