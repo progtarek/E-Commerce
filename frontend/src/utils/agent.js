@@ -48,10 +48,10 @@ let token = null;
  *
  * @returns {Promise<Object>} API response's body
  */
-const agent = async (url, body, method = "GET") => {
+const agent = async (url, body, method = "GET", contentType) => {
   const headers = new Headers();
 
-  if (body) {
+  if (body && !contentType) {
     headers.set("Content-Type", "application/json");
   }
 
@@ -62,7 +62,7 @@ const agent = async (url, body, method = "GET") => {
   const response = await fetch(`${API_ROOT}${url}`, {
     method,
     headers,
-    body: body ? JSON.stringify(body) : undefined,
+    body: body && !contentType ? JSON.stringify(body) : body,
   });
   let result;
 
@@ -123,6 +123,15 @@ const requests = {
    * @returns {Promise<Object>}
    */
   post: (url, body) => agent(url, body, "POST"),
+
+  /**
+   * Send a UPLOAD request
+   *
+   * @param {String} url The endpoint
+   * @param {Record<string, File>} body The request's body
+   * @returns {Promise<Object>}
+   */
+  upload: (url, body) => agent(url, body, "POST", "multipart/form-data"),
 };
 
 const Products = {
@@ -135,10 +144,33 @@ const Products = {
    * @returns {Promise<ProductsResponse>}
    */
   getAll: (query) => requests.get(`/products`, query),
+
+  /**
+   * Create product
+   *
+   * @param {Object} payload Product's payload
+   * @param {Number} [query.imageURL]
+   * @param {Number} [query.title]
+   * @param {Number} [query.description]
+   * @param {Number} [query.price]
+   * @returns {Promise<ProductsResponse>}
+   */
+  create: (payload) => requests.post(`/products`, payload),
+};
+
+const Media = {
+  /**
+   * Create product
+   *
+   * @param {Object} payload Image Upload
+   * @param {File} [File]
+   * @returns {Promise<ProductsResponse>}
+   */
+  upload: (payload) => requests.upload(`/media`, payload),
 };
 
 const setToken = (_token) => {
   token = _token;
 };
 
-export { Products, setToken };
+export { Products, Media, setToken };

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Products } from "../../utils/agent";
+import { Products, Media } from "../../utils/agent";
 
 export const loadProductsList = createAsyncThunk(
   "products",
@@ -11,6 +11,19 @@ export const loadProductsList = createAsyncThunk(
     return response;
   }
 );
+
+export const createProduct = createAsyncThunk(
+  "createProduct",
+  async (payload) => {
+    const response = await Products.create(payload);
+    return response;
+  }
+);
+
+export const uploadMedia = createAsyncThunk("upload", async (payload) => {
+  const response = await Media.upload(payload);
+  return response;
+});
 
 const initialState = {
   docs: [],
@@ -37,6 +50,20 @@ export const productsReducer = createSlice({
     builder.addCase(loadProductsList.fulfilled, (state, action) => {
       state.docs = [...state.docs, ...action.payload.docs];
       state.total = action.payload.total;
+      state.loading = false;
+    });
+    builder.addCase(createProduct.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(createProduct.rejected, (state, action) => {
+      state.errorMessage = action?.error?.message;
+      state.loading = false;
+    });
+    builder.addCase(uploadMedia.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(uploadMedia.rejected, (state, action) => {
+      state.errorMessage = action?.error?.message;
       state.loading = false;
     });
   },

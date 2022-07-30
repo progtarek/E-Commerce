@@ -29,3 +29,18 @@ export const StyledLink = styled.a.attrs({
 })`
   color: ${THEME_PALETTE.green};
 `;
+
+export const StyledFileUploader = styled.div`
+  .media-uploader {
+    border: 2px dashed ${THEME_PALETTE.green};
+    background: ${THEME_PALETTE.gray_400};
+    min-height: 120px;
+
+    svg path {
+      fill: ${THEME_PALETTE.green};
+    }
+    span {
+      color: ${THEME_PALETTE.black};
+    }
+  }
+`;
