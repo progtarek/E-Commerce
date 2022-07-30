@@ -11,8 +11,22 @@ import {
 import { ReactComponent as TrashIcon } from "../../assets/img/icons/ic-trash.svg";
 import { ReactComponent as EditIcon } from "../../assets/img/icons/ic-edit.svg";
 import { NavLink } from "react-router-dom";
+import {
+  loadProductsList,
+  removeProduct,
+  resetProducts,
+} from "../../store/reducers/products.reducer";
+import { useDispatch } from "react-redux";
 
 const ProductCard = ({ title, description, price, imageURL, uniqueName }) => {
+  const dispatch = useDispatch();
+
+  const onRemoveProduct = (id) => {
+    dispatch(removeProduct(id)).then((res) => {
+      dispatch(resetProducts());
+      dispatch(loadProductsList());
+    });
+  };
   return (
     <StyledProductCard>
       <StyledProductCardImage imageURL={imageURL}></StyledProductCardImage>
@@ -26,7 +40,9 @@ const ProductCard = ({ title, description, price, imageURL, uniqueName }) => {
               <EditIcon className="h-6" />
             </NavLink>
           </StyledProductCardAction>
-          <StyledProductCardDangerAction>
+          <StyledProductCardDangerAction
+            onClick={() => onRemoveProduct(uniqueName)}
+          >
             <TrashIcon className="h-6" />
           </StyledProductCardDangerAction>
         </div>

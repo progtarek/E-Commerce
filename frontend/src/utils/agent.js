@@ -184,6 +184,14 @@ const Products = {
    * @returns {Promise<ProductsResponse>}
    */
   updateProduct: (id, payload) => requests.patch(`/products/${id}`, payload),
+
+  /**
+   * Delete product
+   *
+   * @param {String} payload Product's id
+   * @returns {Promise<ProductsResponse>}
+   */
+  removeProduct: (id) => requests.del(`/products/${id}`),
 };
 
 const Media = {

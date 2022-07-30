@@ -33,6 +33,11 @@ export const updateProduct = createAsyncThunk(
   }
 );
 
+export const removeProduct = createAsyncThunk("removeProduct", async (id) => {
+  const response = await Products.removeProduct(id);
+  return response;
+});
+
 export const uploadMedia = createAsyncThunk("upload", async (payload) => {
   const response = await Media.upload(payload);
   return response;
@@ -47,10 +52,12 @@ const initialState = {
   loading: false,
 };
 
-export const productsReducer = createSlice({
+export const productsSlice = createSlice({
   name: "products",
   initialState,
-  reducers: {},
+  reducers: {
+    resetProducts: () => initialState,
+  },
 
   extraReducers: function (builder) {
     builder.addCase(loadProductsList.pending, (state, action) => {
@@ -86,7 +93,16 @@ export const productsReducer = createSlice({
       state.errorMessage = action?.error?.message;
       state.loading = false;
     });
+    builder.addCase(removeProduct.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(removeProduct.rejected, (state, action) => {
+      state.errorMessage = action?.error?.message;
+      state.loading = false;
+    });
   },
 });
 
-export default productsReducer.reducer;
+export const { resetProducts } = productsSlice.actions;
+
+export default productsSlice.reducer;

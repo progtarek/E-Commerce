@@ -9,6 +9,7 @@ import {
   createProduct,
   uploadMedia,
   updateProduct,
+  resetProducts,
 } from "../store/reducers/products.reducer";
 import { useDispatch } from "react-redux";
 import { ReactComponent as TrashIcon } from "../assets/img/icons/ic-trash.svg";
@@ -47,7 +48,6 @@ const ManageProduct = () => {
     if (id) {
       dispatch(findProduct(id)).then((res) => {
         setProduct(res?.payload);
-        console.log("=============", res?.payload);
         if (res?.payload?.imageURL) {
           setFile(res?.payload?.imageURL);
         }
@@ -86,7 +86,7 @@ const ManageProduct = () => {
         onSubmit={(formValue, { setSubmitting }) => {
           setSubmitting(true);
           setLoading(true);
-
+          dispatch(resetProducts());
           if (mode === "create") {
             dispatch(createProduct(formValue))
               .then((result) => {
