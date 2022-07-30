@@ -27,7 +27,7 @@ export class MediaController {
       fileFilter: imageFileFilter,
     }),
   )
-  async uploadedFile(@UploadedFile() file): Promise<string> {
+  async uploadedFile(@UploadedFile() file): Promise<{ url: string }> {
     try {
       return this.mediaService.upload(file.path);
     } catch (error) {

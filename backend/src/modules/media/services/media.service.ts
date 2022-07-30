@@ -14,7 +14,7 @@ export class MediaService {
     });
   }
 
-  public upload(path: string): Promise<string> {
+  public upload(path: string): Promise<{ url: string }> {
     return new Promise((resolve) => {
       Cloudinary.uploader.upload(
         path,
@@ -24,7 +24,7 @@ export class MediaService {
         },
         function (err, result) {
           unlinkSync(path);
-          resolve(result.secure_url);
+          resolve({ url: result.secure_url });
         },
       );
     });
