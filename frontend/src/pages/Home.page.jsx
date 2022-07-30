@@ -1,7 +1,12 @@
-import React from "react";
+import ProductsList from "../components/products/ProductsList.component";
+import { StyledContainer } from "../assets/styles/common";
 
 const Home = () => {
-  return <div>Home</div>;
+  return (
+    <StyledContainer className="py-7">
+      <ProductsList />
+    </StyledContainer>
+  );
 };
 
 export default Home;
