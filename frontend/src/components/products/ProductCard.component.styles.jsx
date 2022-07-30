@@ -13,6 +13,10 @@ export const StyledProductCardImage = styled.div`
   height: 180px;
   background-color: ${THEME_PALETTE.green_200};
   border-radius: 12px;
+  background-image: url(${({ imageURL }) => imageURL});
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
 `;
 
 export const StyledProductCardTitle = styled.div.attrs({
