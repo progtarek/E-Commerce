@@ -21,7 +21,7 @@ export class ProductsService {
   ): Promise<PaginatedResponse<Product>> {
     const query = this._productModel
       .find()
-      .select('title description price uniqueName -_id')
+      .select('title description price uniqueName imageURL -_id')
       .sort({ _id: 1 })
       .skip(queryParams.skip);
 
