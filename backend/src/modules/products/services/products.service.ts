@@ -37,7 +37,7 @@ export class ProductsService {
   async findProduct(uniqueName: string): Promise<Product> {
     const foundProduct = await this._productModel
       .findOne({ uniqueName })
-      .select('title description price uniqueName -_id');
+      .select('title description price uniqueName imageURL -_id');
     if (!foundProduct) {
       throw new NotFoundException('Product not found');
     } else {

@@ -3,13 +3,18 @@ import { Formik } from "formik";
 import FormInput from "../components/input/Input.component";
 import Button from "../components/button/Button.component";
 import * as Yup from "yup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
-import { createProduct, uploadMedia } from "../store/reducers/products.reducer";
+import {
+  createProduct,
+  uploadMedia,
+  updateProduct,
+} from "../store/reducers/products.reducer";
 import { useDispatch } from "react-redux";
 import { ReactComponent as TrashIcon } from "../assets/img/icons/ic-trash.svg";
 import Loading from "../components/loading/Loading.component";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { findProduct } from "../store/reducers/products.reducer";
 
 const ValidationSchema = Yup.object().shape({
   imageURL: Yup.string().optional(),
@@ -26,12 +31,30 @@ const ValidationSchema = Yup.object().shape({
     .required("This field is required"),
 });
 
+let initialValues = { title: "", description: "", price: 0, imageURL: "" };
+
 const ManageProduct = () => {
+  const { id } = useParams();
+  const [product, setProduct] = useState(null);
+  const [mode, setMode] = useState("create");
   const dispatch = useDispatch();
   const fileTypes = ["JPG", "PNG", "GIF"];
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (id) {
+      dispatch(findProduct(id)).then((res) => {
+        setProduct(res?.payload);
+        console.log("=============", res?.payload);
+        if (res?.payload?.imageURL) {
+          setFile(res?.payload?.imageURL);
+        }
+        setMode("edit");
+      });
+    }
+  }, [dispatch]);
 
   const handleOnFileChange = (file, setFieldValue) => {
     setLoading(true);
@@ -57,20 +80,36 @@ const ManageProduct = () => {
   return (
     <StyledContainer className="py-7">
       <Formik
+        enableReinitialize={true}
         validationSchema={ValidationSchema}
-        initialValues={{ title: "", description: "", price: 0, imageURL: "" }}
+        initialValues={{ ...initialValues, ...product }}
         onSubmit={(formValue, { setSubmitting }) => {
           setSubmitting(true);
           setLoading(true);
-          dispatch(createProduct(formValue))
-            .then((result) => {
-              setLoading(false);
-              navigate("/");
-            })
-            .catch((error) => {
-              console.error(error);
-              setLoading(false);
-            });
+
+          if (mode === "create") {
+            dispatch(createProduct(formValue))
+              .then((result) => {
+                setLoading(false);
+                navigate("/");
+              })
+              .catch((error) => {
+                console.error(error);
+                setLoading(false);
+              });
+          } else {
+            dispatch(
+              updateProduct({ id: product.uniqueName, payload: formValue })
+            )
+              .then((result) => {
+                setLoading(false);
+                navigate("/");
+              })
+              .catch((error) => {
+                console.error(error);
+                setLoading(false);
+              });
+          }
         }}
       >
         {({
@@ -142,9 +181,12 @@ const ManageProduct = () => {
               />
             </div>
 
-            <Button type="submit" disabled={loading || !isValid}>
-              {" "}
-              Create Product
+            <Button
+              className="mt-5"
+              type="submit"
+              disabled={loading || !isValid}
+            >
+              {mode === "create" ? "Create Product" : "Save Product"}
             </Button>
           </form>
         )}

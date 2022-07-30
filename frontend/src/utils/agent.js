@@ -116,6 +116,14 @@ const requests = {
    */
   put: (url, body) => agent(url, body, "PUT"),
   /**
+   * Send a PUT request
+   *
+   * @param {String} url The endpoint
+   * @param {Record<string, unknown>} body The request's body
+   * @returns {Promise<Object>}
+   */
+  patch: (url, body) => agent(url, body, "PATCH"),
+  /**
    * Send a POST request
    *
    * @param {String} url The endpoint
@@ -149,13 +157,33 @@ const Products = {
    * Create product
    *
    * @param {Object} payload Product's payload
-   * @param {Number} [query.imageURL]
-   * @param {Number} [query.title]
-   * @param {Number} [query.description]
+   * @param {String} [query.imageURL]
+   * @param {String} [query.title]
+   * @param {String} [query.description]
    * @param {Number} [query.price]
    * @returns {Promise<ProductsResponse>}
    */
   create: (payload) => requests.post(`/products`, payload),
+
+  /**
+   * Create product
+   *
+   * @param {String} payload Product's id
+   * @returns {Promise<ProductsResponse>}
+   */
+  findProduct: (id) => requests.get(`/products/${id}`),
+
+  /**
+   * Update product
+   *
+   * @param {String} payload Product's id
+   * @param {String} [query.imageURL]
+   * @param {String} [query.title]
+   * @param {String} [query.description]
+   * @param {Number} [query.price]
+   * @returns {Promise<ProductsResponse>}
+   */
+  updateProduct: (id, payload) => requests.patch(`/products/${id}`, payload),
 };
 
 const Media = {

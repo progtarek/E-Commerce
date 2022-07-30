@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import {
   productsListSelector,
   productsListTotalSelector,
-  productsListErrorSelector,
   productsListLoadingSelector,
 } from "../../store/selectors/products.selector";
 import ProductCard from "./ProductCard.component";
@@ -18,7 +17,6 @@ const ProductsList = () => {
   const total = useSelector(productsListTotalSelector);
   const products = useSelector(productsListSelector);
   const loading = useSelector(productsListLoadingSelector);
-  const error = useSelector(productsListErrorSelector);
 
   useEffect(() => {
     loadProducts();
@@ -33,7 +31,7 @@ const ProductsList = () => {
       pullDownToRefresh
       pullDownToRefreshThreshold={50}
     >
-      {loading ? (
+      {loading && products?.length < 10 ? (
         <p className="text-xs text-center">Loading ...</p>
       ) : (
         <div className="grid grid-cols-4 gap-7">

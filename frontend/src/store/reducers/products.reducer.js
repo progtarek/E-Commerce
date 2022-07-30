@@ -20,6 +20,19 @@ export const createProduct = createAsyncThunk(
   }
 );
 
+export const findProduct = createAsyncThunk("findProduct", async (id) => {
+  const response = await Products.findProduct(id);
+  return response;
+});
+
+export const updateProduct = createAsyncThunk(
+  "updateProduct",
+  async ({ id, payload }) => {
+    const response = await Products.updateProduct(id, payload);
+    return response;
+  }
+);
+
 export const uploadMedia = createAsyncThunk("upload", async (payload) => {
   const response = await Media.upload(payload);
   return response;
@@ -48,7 +61,7 @@ export const productsReducer = createSlice({
       state.loading = false;
     });
     builder.addCase(loadProductsList.fulfilled, (state, action) => {
-      state.docs = [...state.docs, ...action.payload.docs];
+      state.docs = state.docs.concat([...action.payload.docs]);
       state.total = action.payload.total;
       state.loading = false;
     });
@@ -63,6 +76,13 @@ export const productsReducer = createSlice({
       state.loading = true;
     });
     builder.addCase(uploadMedia.rejected, (state, action) => {
+      state.errorMessage = action?.error?.message;
+      state.loading = false;
+    });
+    builder.addCase(findProduct.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(findProduct.rejected, (state, action) => {
       state.errorMessage = action?.error?.message;
       state.loading = false;
     });

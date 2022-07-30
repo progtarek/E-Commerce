@@ -1,4 +1,4 @@
-import React, { Fragment, Suspense } from "react";
+import React, { Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
 import { Header, Footer } from "./components";
 
@@ -12,18 +12,19 @@ const ManageProduct = React.lazy(() =>
 
 function App() {
   return (
-    <Fragment>
+    <div className="flex flex-col justify-between min-h-screen">
       <Header />
       <main>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<p className="text-xs text-center">Loading ...</p>}>
           <Routes>
             <Route index element={<Home />} />
             <Route path="/add" element={<ManageProduct />} />
+            <Route path="/edit/:id" element={<ManageProduct />} />
           </Routes>
         </Suspense>
       </main>
       <Footer />
-    </Fragment>
+    </div>
   );
 }
 
