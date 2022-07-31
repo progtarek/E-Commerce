@@ -9,7 +9,11 @@ import ProductCard from "./ProductCard.component";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { loadProductsList } from "../../store/reducers/products.reducer";
+import { loadProductsList } from "../../store/actions/products.actions";
+import { ReactComponent as BoxIcon } from "../../assets/img/icons/ic-box.svg";
+import { NavLink } from "react-router-dom";
+import Button from "../button/Button.component";
+import { resetProducts } from "../../store/reducers/products.reducer";
 
 const ProductsList = () => {
   const dispatch = useDispatch();
@@ -19,6 +23,7 @@ const ProductsList = () => {
   const loading = useSelector(productsListLoadingSelector);
 
   useEffect(() => {
+    dispatch(resetProducts());
     dispatch(loadProductsList());
   }, [dispatch]);
 
@@ -40,6 +45,16 @@ const ProductsList = () => {
           ))}
         </div>
       )}
+
+      {!loading && products?.length === 0 ? (
+        <div className="flex flex-col justify-center">
+          <BoxIcon className="h-52" />
+          <p className="text-center text-sm">No products Found</p>
+          <NavLink to="add" className="mt-5 flex justify-center">
+            <Button>Add Product</Button>
+          </NavLink>
+        </div>
+      ) : null}
     </InfiniteScroll>
   );
 };

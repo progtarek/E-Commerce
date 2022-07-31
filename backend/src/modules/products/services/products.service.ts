@@ -16,11 +16,27 @@ export class ProductsService {
     @InjectModel(Product.name) private _productModel: Model<Product>,
   ) {}
 
+  private escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+  }
+
+  private processSearchQuery(searchString, searchableFields?) {
+    // case insensitive substring search
+    const searchRegex = {
+      $regex: `.*${this.escapeRegExp(searchString)}.*`,
+      $options: 'i',
+    };
+    return { $or: searchableFields.map((field) => ({ [field]: searchRegex })) };
+  }
+
   async find(
     queryParams: PaginationParamsDTO,
   ): Promise<PaginatedResponse<Product>> {
+    const q = queryParams.q
+      ? this.processSearchQuery(queryParams.q, ['title', 'description'])
+      : null;
     const query = this._productModel
-      .find()
+      .find({ ...(q && { ...q }) })
       .select('title description price uniqueName imageURL -_id')
       .sort({ _id: 1 })
       .skip(queryParams.skip);
@@ -31,7 +47,7 @@ export class ProductsService {
     const docs = await query;
     const total = await this._productModel.count();
 
-    return { docs, total };
+    return { docs, total, skip: queryParams.skip };
   }
 
   async findProduct(uniqueName: string): Promise<Product> {

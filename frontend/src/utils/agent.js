@@ -149,6 +149,7 @@ const Products = {
    * @param {Object} query Product's query parameters
    * @param {Number} [query.limit=10]
    * @param {Number} [query.skip]
+   * @param {String} [query.q]
    * @returns {Promise<ProductsResponse>}
    */
   getAll: (query) => requests.get(`/products`, query),

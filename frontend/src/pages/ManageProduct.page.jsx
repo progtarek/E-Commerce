@@ -5,17 +5,17 @@ import Button from "../components/button/Button.component";
 import * as Yup from "yup";
 import { useEffect, useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
-import {
-  createProduct,
-  uploadMedia,
-  updateProduct,
-  resetProducts,
-} from "../store/reducers/products.reducer";
+import { resetProducts } from "../store/reducers/products.reducer";
 import { useDispatch } from "react-redux";
 import { ReactComponent as TrashIcon } from "../assets/img/icons/ic-trash.svg";
 import Loading from "../components/loading/Loading.component";
 import { useNavigate, useParams } from "react-router-dom";
-import { findProduct } from "../store/reducers/products.reducer";
+import {
+  findProduct,
+  createProduct,
+  uploadMedia,
+  updateProduct,
+} from "../store/actions/products.actions";
 
 const ValidationSchema = Yup.object().shape({
   imageURL: Yup.string().optional(),
