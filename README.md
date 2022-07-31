@@ -38,6 +38,8 @@ build the image.
 - Inside the app E-commerce directory type the following.
 
 ```sh
+docker build ./frontend -t frontend
+docker build ./backend -t backend
 docker-compose up
 ```
 
