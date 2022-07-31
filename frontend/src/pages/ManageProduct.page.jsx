@@ -54,7 +54,7 @@ const ManageProduct = () => {
         setMode("edit");
       });
     }
-  }, [dispatch]);
+  }, [dispatch, id]);
 
   const handleOnFileChange = (file, setFieldValue) => {
     setLoading(true);

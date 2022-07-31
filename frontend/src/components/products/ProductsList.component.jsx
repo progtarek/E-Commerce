@@ -19,8 +19,8 @@ const ProductsList = () => {
   const loading = useSelector(productsListLoadingSelector);
 
   useEffect(() => {
-    loadProducts();
-  }, []);
+    dispatch(loadProductsList());
+  }, [dispatch]);
 
   return (
     <InfiniteScroll
